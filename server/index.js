@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 
     res.locals.fechaActual = fecha.getFullYear();
 
-    console.log(res.locals);
+    // console.log(res.locals);
 
     return next();
 
