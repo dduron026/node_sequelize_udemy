@@ -3,6 +3,16 @@ const express = require('express');
 const path = require('path');
 const routes = require('./routes');
 const configs = require('./config');
+const db = require('./config/database');
+
+db.authenticate()
+    .then(() => {
+        console.log('Connection has been established successfully.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
+    });
+
 //configurar express
 const app = express()
 
