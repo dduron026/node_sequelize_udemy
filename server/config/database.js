@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 module.exports = new Sequelize('agencia', 'root', 'root', {
 
-    host: '127.0.0.1',
+    host: 'localhost',
     port: '3306',
     dialect: 'mysql',
     define: {
