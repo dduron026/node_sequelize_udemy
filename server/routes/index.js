@@ -4,10 +4,16 @@ const router = express.Router();
 
 const Viaje = require('../models/Viajes');
 
+const Testimonial = require('../models/Testimoniales');
+
+
+
 module.exports = () => {
 
     router.get('/', (req, res) => {
-        res.render('index');
+        res.render('index', {
+            clase: 'home'
+        });
     });
 
     router.get('/nosotros', (req, res) => {
@@ -19,7 +25,7 @@ module.exports = () => {
 
     router.get('/viajes/:id', (req, res) => {
 
-        Viaje.findById(req.params.id)
+        Viaje.findByPk(req.params.id)
             .then(viaje => res.render('viaje', {
                 viaje
             }))
@@ -41,11 +47,73 @@ module.exports = () => {
 
     });
 
+
+
     router.get('/testimoniales', (req, res) => {
 
-        res.render('testimoniales', {
-            pagina: 'testimoniales'
-        });
+        Testimonial.findAll()
+            .then(tabla => res.render('testimoniales', {
+                pagina: 'testimoniales',
+                tabla
+            }))
+    });
+
+    //para guardar el formulario
+    router.post('/testimoniales', (req, res) => {
+
+        // console.log(req.body);
+
+        //validar que los campos esten llenos
+
+        let {
+            nombre,
+            correo,
+            mensaje
+        } = req.body;
+
+        //arreglo de errores en caso q alguien deje los campos vacíos
+        let errores = []
+
+        if (!nombre) {
+            errores.push({
+                'mensaje': 'falta el nombre'
+            })
+        }
+        if (!correo) {
+            errores.push({
+                'mensaje': 'falta el correo'
+            })
+        }
+        if (!mensaje) {
+            errores.push({
+                'mensaje': 'falta el mensaje'
+            })
+        }
+
+        //revisar por errores
+        if (errores.length > 0) {
+            //muestra la vista con errores
+            res.render('testimoniales', {
+                errores,
+                nombre,
+                correo,
+                mensaje
+            })
+
+        } else {
+            //guarda el formulario en la base de datos
+            Testimonial.create({
+                    nombre,
+                    correo,
+                    mensaje
+                })
+                .then(() => res.redirect('testimoniales'))
+                .catch(error => console.log(error))
+        }
+
+
+
+
     });
 
     return router;

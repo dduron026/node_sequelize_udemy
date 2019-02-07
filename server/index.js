@@ -4,6 +4,9 @@ const path = require('path');
 const routes = require('./routes');
 const configs = require('./config');
 const db = require('./config/database');
+const morgan = require('morgan');
+
+const bodyParser = require('body-parser');
 
 db.authenticate()
     .then(() => {
@@ -17,6 +20,8 @@ db.authenticate()
 const app = express()
 
 
+//middleware
+app.use(morgan('dev')) //morgan muestra por consola, las peticiones hechas al server
 
 
 //habilitar pug
@@ -45,6 +50,14 @@ app.use((req, res, next) => {
     return next();
 
 });
+
+//ejecutar body parser
+app.use(bodyParser.urlencoded({
+    extended: true
+}))
+
+// parse application/json
+app.use(bodyParser.json())
 
 //cargar rutas
 app.use('/', routes());
