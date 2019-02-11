@@ -52,9 +52,9 @@ module.exports = () => {
     router.get('/testimoniales', (req, res) => {
 
         Testimonial.findAll()
-            .then(tabla => res.render('testimoniales', {
+            .then(testimoniales => res.render('testimoniales', {
                 pagina: 'testimoniales',
-                tabla
+                testimoniales
             }))
     });
 
@@ -72,7 +72,7 @@ module.exports = () => {
         } = req.body;
 
         //arreglo de errores en caso q alguien deje los campos vacíos
-        let errores = []
+        let errores = [];
 
         if (!nombre) {
             errores.push({
@@ -107,7 +107,7 @@ module.exports = () => {
                     correo,
                     mensaje
                 })
-                .then(() => res.redirect('testimoniales'))
+                .then(testimonial => res.redirect('/testimoniales'))
                 .catch(error => console.log(error))
         }
 
