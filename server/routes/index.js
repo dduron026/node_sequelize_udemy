@@ -11,9 +11,31 @@ const Testimonial = require('../models/Testimoniales');
 module.exports = () => {
 
     router.get('/', (req, res) => {
-        res.render('index', {
-            clase: 'home'
-        });
+
+        //varias consultas a la vez a la BD y mostrarlas en la vista
+        const promises = [];
+
+        promises.push(Viaje.findAll({
+            limit: 3
+        }))
+
+        promises.push(Testimonial.findAll({
+            limit: 3
+        }))
+
+        //pasar el promise y ejecutarlo
+        const resultado = Promise.all(promises);
+
+        resultado.then(resultado => {
+                res.render('index', {
+                    pagina: 'proximos viajes',
+                    clase: 'home',
+                    viajes: resultado[0],
+                    testimoniales: resultado[1]
+                })
+            })
+            .catch(error => console.log(error));
+
     });
 
     router.get('/nosotros', (req, res) => {
@@ -113,8 +135,8 @@ module.exports = () => {
 
 
 
-
     });
 
     return router;
+
 }
